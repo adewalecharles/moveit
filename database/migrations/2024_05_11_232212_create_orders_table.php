@@ -12,7 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
+            $table->uuid('uuid')->unique();
+
+            $table->unsignedBigInteger('shipment_id')->nullable();
+
+            $table->json('customer')->nullable();
+            $table->json('sku')->nullable();
+
+            $table->json('meta_data')->nullable();
+
             $table->timestamps();
         });
     }

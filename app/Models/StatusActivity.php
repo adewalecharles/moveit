@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Shipment extends Model
+class StatusActivity extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class Shipment extends Model
      *
      * @var array
      */
-    protected $fillable = ['meta_data'];
+    protected $fillable = ['status', 'meta_data'];
 
     /**
      * The attributes that should be mutated to array.
@@ -24,15 +24,12 @@ class Shipment extends Model
      */
     protected $casts = ['meta_data' => 'array'];
 
-    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
+
+    public function statusable()
     {
-        return $this->hasMany(Order::class);
+        $this->morphTo();
     }
 
-    public function statuses(): \Illuminate\Database\Eloquent\Relations\MorphMany
-    {
-        return $this->morphMany(StatusActivity::class, 'statusable');
-    }
 
     /**
      * The "booted" method of the model.
@@ -41,10 +38,8 @@ class Shipment extends Model
      */
     protected static function booted()
     {
-        //static::addGlobalScope(new ActiveScope);
-        static::creating(function ($shipment) {
-            $shipment->uuid = (string) Str::uuid(); // Create uuid when a new shipment is to be created
+        static::creating(function ($status) {
+            $status->uuid = (string) Str::uuid(); // Create uuid when a new status is to be created
         });
     }
-
 }
